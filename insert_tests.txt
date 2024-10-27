@@ -1,0 +1,54 @@
+{
+    "username": "user11",
+    "firstname": "user21f",
+    "lastname": "user21s",
+    "phone_number": "+380000000200",
+    "email": "уцe@gmail.com",
+    "password": "Pqs123Qwerty"
+}
+
+{
+    "title": "title324"
+}
+
+{
+
+    "type": "sometype",
+    "description" : "dewgegwgwgwegew",
+    "time_zone" : "1",
+    "person_id": 1
+}
+
+
+{
+
+
+    "title": "sometype",
+    "description" : "dewgegwgwgwegew",
+    "created_at" : "2022-11-11 12:21:04",
+    "updated_at" : "2022-12-12 13:11:10",
+    "content" : "qwerty",
+    "calendar_id": 1,
+    "category_id": 1
+
+}
+{
+
+    "type": "ssssss",
+    "description" : "de",
+    "time_zone" : "1"
+
+}
+
+
+{
+
+
+    "title": "30324133",
+    "description" : "dewg4114egqrgew",
+    "created_at" : "2022-10-11 12:21:04",
+    "content" : "qwerq4141y1",
+    "calendar_id": 6,
+    "category_id": 1,
+    "person_id": 3
+}

@@ -1,0 +1,861 @@
+openapi: 3.0.0
+info:
+  title: Calendar
+  description: api for calendar
+  version: 0.0.1
+servers:
+  - url: http://localhost:5000/api/v1
+    description: The main server
+tags:
+  - name: user
+    description: Everything about user(create/read, etc.)
+  - name: calendar
+    description: inforamation about calendar
+  - name: event
+    description: info about event
+
+paths:
+  /user/login:
+    get:
+      tags:
+        - user
+      summary: Logs user into the system
+      description: ''
+      operationId: loginUser
+      parameters:
+        - name: username
+          in: query
+          description: The user name for login
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: The password for login in clear text
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/person'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/person'
+        '400':
+          description: Invalid username/password supplied
+  /user/register:
+     post:
+      tags:
+        - user
+      summary: register user
+      operationId: register_user
+      requestBody:
+        description: register user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/person'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+        '404':
+          description: No page found
+        '403':
+          description: Forbidden to register
+
+  /users:
+    get:
+      tags:
+        - user
+      summary: return all users
+      description: this can be done only by admin
+      operationId: get_all_users
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/person'
+      security:
+        - user_auth:
+            - read:users
+
+  /user/{person_id}:
+    get:
+      tags:
+        - user
+      summary: Get user by person_id
+      description: ''
+      operationId: get_user_by_id
+      parameters:
+        - name: person_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/person'
+
+        '400':
+          description: Invalid person_id supplied
+        '404':
+          description: User not found
+      security:
+        - user_auth:
+            - write:users
+            - read:users
+
+    put:
+      tags:
+        - user
+      summary: Update user
+      description: This can only be done by the logged in user.
+      operationId: update_user
+      parameters:
+        - name: person_id
+          in: path
+          description: person_id that need to be updated
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Update an existent user in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/person'
+
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/person'
+
+        '403':
+          description: Forbidden to access
+      security:
+        - user_auth:
+            - write:users
+            - read:users
+    delete:
+      tags:
+        - user
+      summary: Delete user
+      description: This can be done by the logged in user and admin.
+      operationId: delete_user
+      parameters:
+        - name: person_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+
+        '400':
+          description: Invalid person_od supplied
+        '404':
+          description: User not found
+      security:
+        - user_auth:
+            - write:users
+            - read:users
+
+
+  /event:
+    get:
+      tags:
+        - event
+      summary: return all events
+      description: this can be done only by logged user
+      operationId: get_all_events
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/events'
+      security:
+        - user_auth:
+            - read:users
+  /event/{calendar_id}:
+    post:
+        tags:
+          - event
+
+        summary: Create new event by some user
+        description: This can only be done by the logged in user.
+        operationId: create_new_event
+        parameters:
+        - name: calendar_id
+          in: path
+          description: person_id that need to be updated
+          required: true
+          schema:
+            type: integer
+        requestBody:
+          description: Created event object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/event'
+
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/event'
+
+        security:
+          - user_auth:
+              - write:users
+              - read:users
+  /event/{event_id}:
+    get:
+      tags:
+        - event
+      summary: Return some specific event
+      description: This can be done by admin
+      operationId: getSomeEvent
+      parameters:
+        - name: event_id
+          in: path
+          description: 'Id of event that have to be get'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/event'
+
+        '404':
+          description: Category not found
+      security:
+        - user_auth:
+            - write:users
+            - read:users
+    delete:
+      tags:
+        - event
+      summary: Delete event
+      description: This can be done by the logged in user and admin.
+      operationId: delete_event
+      parameters:
+        - name: event_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+
+        '400':
+          description: Invalid event_id supplied
+        '404':
+          description: event not found
+      security:
+        - user_auth:
+            - write:users
+            - read:users
+        - admin_auth:
+            - write:users
+            - read:users
+    put:
+        tags:
+          - event
+        summary: Update event
+        description: This can only be done by the logged in user.
+        operationId: update_event
+        parameters:
+          - name: event_id
+            in: path
+            description: event_id that need to be deleted
+            required: true
+            schema:
+              type: integer
+
+        requestBody:
+          description: Update an existent event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/event'
+
+        responses:
+          '200':
+            description: successful operatio
+            content:
+
+              application/json:
+                schema:
+                   $ref: '#/components/schemas/event'
+          '404':
+            description: Not found
+        security:
+        - user_auth:
+            - write:users
+            - read:users
+
+  /calendar:
+    get:
+      tags:
+        - calendar
+      summary: return all calendars
+      description: this can be done only by logged user
+      operationId: get_all_calendars
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/calendars'
+      security:
+        - user_auth:
+            - read:users
+    post:
+        tags:
+          - calendar
+        summary: Create new calendar by some user
+        description: This can only be done by the logged in user.
+        operationId: create_new_calendar
+        requestBody:
+          description: Created calendar object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/calendar'
+
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/calendar'
+
+        security:
+          - user_auth:
+              - write:users
+              - read:users
+
+  /calendar/{calendar_id}:
+    get:
+      tags:
+        - calendar
+      summary: Return some specific calendar
+      description: This can be done by admin
+      operationId: getSomeCalendar
+      parameters:
+        - name: calendar_id
+          in: path
+          description: 'Id of calendar that have to be get'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/calendar'
+
+        '404':
+          description: Category not found
+      security:
+        - user_auth:
+            - write:users
+            - read:users
+    delete:
+      tags:
+        - calendar
+      summary: Delete calendar
+      description: This can be done by the logged in user and admin.
+      operationId: delete_calendaar
+      parameters:
+        - name: calendar_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+
+        '400':
+          description: Invalid calendar_id supplied
+        '404':
+          description: calendar not found
+      security:
+        - user_auth:
+            - write:users
+            - read:users
+        - admin_auth:
+            - write:users
+            - read:users
+    put:
+        tags:
+          - calendar
+        summary: Update calendar
+        description: This can only be done by the logged in user.
+        operationId: update_calendar
+        parameters:
+          - name: calendar_id
+            in: path
+            description: calendar_id that need to be deleted
+            required: true
+            schema:
+              type: integer
+
+        requestBody:
+          description: Update an existent calendar
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/calendar'
+
+        responses:
+          '200':
+            description: successful operatio
+            content:
+
+              application/json:
+                schema:
+                   $ref: '#/components/schemas/calendar'
+          '404':
+            description: Not found
+        security:
+        - user_auth:
+            - write:users
+            - read:users
+  /calendar/get_access/{calendar_id}/{person_id}:
+    post:
+        tags:
+          - calendar
+        summary: adding new user to calendar
+        description: This can only be done by the logged in user.
+        operationId: update_calendar_permission
+        parameters:
+          - name: person_id
+            in: path
+            description: person_id that need to be updated in permission
+            required: true
+            schema:
+              type: integer
+          - name: calendar_id
+            in: path
+            description: calendar_id to which users will be added
+            required: true
+            schema:
+              type: integer
+
+        requestBody:
+          description: Update an existent permission
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/person_has_calendar'
+
+        responses:
+          '200':
+            description: successful operatio
+            content:
+
+              application/json:
+               schema:
+                type: string
+          '400':
+            description: Invalid person supplied
+          '404':
+            description: Page Not found
+
+        security:
+          - user_auth:
+             - write:users
+             - read:users
+    delete:
+      tags:
+        - calendar
+      summary: Delete permission for user
+      description: This can be done by the logged in user and admin.
+      operationId: delete_permission_calendar
+      parameters:
+          - name: person_id
+            in: path
+            description: email that need to be deleted in permission
+            required: true
+            schema:
+              type: integer
+          - name: calendar_id
+            in: path
+            description: calendar_id in which users will be deleted
+            required: true
+            schema:
+              type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+
+        '400':
+          description: Invalid calendar_id supplied
+        '404':
+          description: calendar not found
+      security:
+        - user_auth:
+            - write:users
+            - read:users
+
+
+  /category:
+    get:
+      tags:
+        - category
+      summary: Return all existing categories
+      description: This can be done by anybody
+      operationId: getCategory
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/categories'
+      security:
+        - user_auth:
+            - write:users
+            - read:users
+    post:
+      tags:
+        - category
+      summary: Create new category
+      description: This can only be done by the user.
+      operationId: create_category
+      requestBody:
+        description: Created category object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/category'
+
+      responses:
+       '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/category'
+
+      security:
+        - user_auth:
+            - write:users
+            - read:users
+
+  /category/{category_id}:
+    get:
+      tags:
+        - category
+      summary: Return some specific category
+      description: This can be done by anybody
+      operationId: getSomeCategory
+      parameters:
+        - name: category_id
+          in: path
+          description: 'Id of category that have to be get'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/category'
+
+        '404':
+          description: Category not found
+      security:
+        - user_auth:
+            - write:users
+            - read:users
+    delete:
+      tags:
+        - category
+      summary: Delete category
+      description: This can be done by the logged in user and admin
+      operationId: delete_category
+      parameters:
+        - name: category_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+
+        '400':
+          description: Invalid category_id supplied
+        '404':
+          description: category not found
+      security:
+        - user_auth:
+            - write:users
+            - read:users
+
+    put:
+        tags:
+          - category
+        summary: Update category
+        description: This can only be done by the logged in user.
+        operationId: update_catogory
+        parameters:
+          - name: category_id
+            in: path
+            description: category_id that need to be deleted
+            required: true
+            schema:
+              type: integer
+
+        requestBody:
+          description: Update an existent event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/category'
+
+        responses:
+          '200':
+            description: successful operatio
+            content:
+
+              application/json:
+                schema:
+                   $ref: '#/components/schemas/category'
+          '404':
+            description: Not found
+        security:
+        - user_auth:
+            - write:users
+            - read:users
+
+components:
+  schemas:
+    person:
+      type: object
+      required:
+      - person_id
+      - first_name
+      - last_name
+      - password
+      - email
+      properties:
+        person_id:
+          type: integer
+          format: int64
+          example: 1
+        first_name:
+          type: string
+          example: John
+        last_name:
+          type: string
+          example: Horch
+        password:
+          type: string
+          format: password
+          example: 098qwer
+        email:
+          type: string
+          example: johnhorch@gmail.com
+
+    person_has_calendar:
+      type: object
+      required:
+      - fk_person_id
+      - fk_calendar_id
+      - permission
+      properties:
+        fk_person_id:
+          $ref: '#/components/schemas/person'
+        fk_calendar_id:
+          $ref: '#/components/schemas/calendar'
+        permission:
+          type: string
+          enum: [revision, change, owner]
+
+    calendar:
+      type: object
+      required:
+      - calendar_id
+      - time_zone
+      - status
+      - creator_id
+      properties:
+        calendar_id:
+          type: integer
+          format: int64
+          example: 1
+        calendar_name:
+          type: string
+          example: "calendar name"
+        status:
+          type: string
+          enum: [public, private]
+          example: public
+          default: private
+        time_zone:
+          type: string
+          enum:
+          - 'GMT-11'
+          - 'GMT-10'
+          - 'GMT -9'
+          - 'GMT -8'
+          - 'GMT -7'
+          - 'GMT -6'
+          - 'GMT -5'
+          - 'GMT -4'
+          - 'GMT -3'
+          - 'GMT -2'
+          - 'GMT -1'
+          - 'GMT 0'
+          - 'GMT +1'
+          - 'GMT +2'
+          - 'GMT +3'
+          - 'GMT +4'
+          - 'GMT +5'
+          - 'GMT +6'
+          - 'GMT +7'
+          - 'GMT +8'
+          - 'GMT +9'
+          - 'GMT +10'
+          - 'GMT +11'
+          - 'GMT +12'
+          - 'GMT +13'
+          - 'GMT +14'
+        creator_id:
+          type: integer
+          format: int64
+          example: 2
+    calendars:
+      type: array
+      items:
+        $ref: '#/components/schemas/calendar'
+
+
+          
+    event:
+      type: object
+      required: 
+        - event_id
+        - event_title
+        - created_at
+        - fl_category_id
+        - fl_calendat_id
+      properties:
+        event_id:
+          type: integer
+          format: int64
+          example: 1
+        event_title:
+          type: string
+          example: birthday
+        description:
+          type: string
+          example: Tommorow there will be birthday of my friend!!!
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        fk_category_id:       
+          $ref: '#/components/schemas/category'
+        fk_calendar_id:       
+          $ref: '#/components/schemas/calendar'  
+    events:
+      type: array
+      items:
+        $ref: '#/components/schemas/event' 
+    category:
+      type: object
+      required: 
+        - category_id
+        - category_title
+      properties:
+        category_id:
+          type: integer
+          format: int64
+          example: 1
+        category_title:
+          type: string
+          example: Birthday
+          
+    categories:
+      type: array
+      items:
+        $ref: '#/components/schemas/category'      
+           
+     
+  securitySchemes:
+    user_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+          scopes:
+            write:users: modify users
+            read:users: read users
+    admin_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+          scopes:
+            write:users: modify all
+            read:users: read all
