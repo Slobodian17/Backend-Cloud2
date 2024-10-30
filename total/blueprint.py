@@ -3,7 +3,7 @@ from http.client import HTTPException
 import marshmallow
 import sqlalchemy
 from sqlalchemy import exc
-from total import db_utils
+from .total import db_utils
 import models
 from db_utils import get_entry_by_username_scalar
 from schemas import *
@@ -109,8 +109,6 @@ def admin_required(function):
 
 
 @api_blueprint.route("/users", methods=["GET"])
-@auth.login_required()
-@admin_required
 def getUsers():
     user = db_utils.get_entry(Person)
     response = make_response(jsonify(GetPerson(many=True).dump(user)))
