@@ -124,17 +124,17 @@ def create_user():
 
         for key in person_data:
             if key == 'username':
-                if db_utils.get_entry_by_username_scalar(total.models.Person, person_data[key]) is not None:
+                if db_utils.get_entry_by_username_scalar(models.Person, person_data[key]) is not None:
                     response = make_response(jsonify(message="Username duplicate", status=400))
                     response.status_code = 400
                     return response
             if key == 'email':
-                if db_utils.get_entry_by_email_scalar(total.models.Person, person_data[key]) is not None:
+                if db_utils.get_entry_by_email_scalar(models.Person, person_data[key]) is not None:
                     response = make_response(jsonify(message="Email duplicate", status=400))
                     response.status_code = 400
                     return response
 
-        user = db_utils.create_entry(total.models.Person, **person_data)
+        user = db_utils.create_entry(models.Person, **person_data)
         response = make_response(jsonify(PersonData().dump(user)))
         response.status_code = 200
     except sqlalchemy.exc.IntegrityError:
