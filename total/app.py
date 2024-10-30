@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_bcrypt import Bcrypt
 from waitress import serve
-from total.blueprint import api_blueprint
+from blueprint import api_blueprint
 import pymysql
 from flask_cors import CORS
 
