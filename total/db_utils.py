@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import exists
 from datetime import datetime
-from total import models
+
 
 
 engine = create_engine("mysql://root:root1234@cloud2db.cbgywims63dz.eu-north-1.rds.amazonaws.com:3306/cloud2db", echo=False, pool_size=20, max_overflow=40)
