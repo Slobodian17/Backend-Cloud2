@@ -4,10 +4,10 @@ import marshmallow
 import sqlalchemy
 from sqlalchemy import exc
 from total import db_utils
-import total.models
-from total.db_utils import get_entry_by_username_scalar
-from total.schemas import *
-from total.models import *
+import models
+from db_utils import get_entry_by_username_scalar
+from schemas import *
+from models import *
 import base64
 from flask import Blueprint, jsonify, request, make_response
 from flask_httpauth import HTTPBasicAuth
