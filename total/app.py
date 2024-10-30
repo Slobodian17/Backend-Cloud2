@@ -21,6 +21,6 @@ app.config.update({"TESTING": True})
 
 # CORS(app, resources={r"": {"origins": "*"}})
 if __name__ == "__main__":
-    serve(app, listen='localhost:5000')
+    app.run(host='0.0.0.0', port=5000)
 
-# curl -v -XGET http://localhost:5000/api/v1/hello-world-10
+# curl -v app.run(host='0.0.0.0', port=5000)-XGET http://localhost:5000/api/v1/hello-world-10
