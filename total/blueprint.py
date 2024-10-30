@@ -3,7 +3,7 @@ from http.client import HTTPException
 import marshmallow
 import sqlalchemy
 from sqlalchemy import exc
-from .total import db_utils
+from total import db_utils
 import models
 from db_utils import get_entry_by_username_scalar
 from schemas import *
